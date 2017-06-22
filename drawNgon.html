@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Space</title>
+<style>
+    *{
+        padding:0px;
+        margin:0px;
+    }
+</style>
+    <script type="text/javascript" src="Point.js"></script>
+    <script type="text/javascript" src="Poly.js"></script>
+    <script type="text/javascript" src="Polygon.js"></script>
+    <script type="text/javascript" src="HalfEdge.js"></script>
+    <script type="text/javascript" src="Triangulation.js"></script>
+    <script type="text/javascript" src="TreeNode.js"></script>
+    <script type="text/javascript" src="Tree.js"></script>
+    
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript">
+        function onLoad(){
+            canv = document.getElementById("canvas");
+            //canv.onclick = mouseClick;
+            canv.onmousemove = mouseMove;
+            canv.addEventListener('mousedown', mouseDown);
+            c = canv.getContext('2d');
+            w = canv.width = window.innerWidth;
+            h = canv.height = window.innerHeight;
+
+            c.fillStyle = "#ffffff";
+            c.fillRect (0, 0, w, h);
+        }
+    </script>
+</head>
+<body onload="onLoad()">
+    <canvas id="canvas" resize hidpi="off" style="background:white"></canvas>
+    <div style="position:fixed; top:5px; left:5px; background-color:rgba(0,0,0,0.33); color:#fff; z-index:2; padding:6px; border-radius:6px;">
+        <div>
+            x: <span id="xDisplay"></span>
+            <br/>
+            y: <span id="yDisplay"></span>
+            <br/>
+            dragPoint: <span id="dragDisplay"></span>
+        </div>
+        <!--<div>
+            <button>triangulate</button>
+        </div>-->
+    </div>
+
+    <div style="position:fixed; background-color:rgba(0,0,0,0.66); color:#fff; z-index:2; padding:6px; border-radius:6px; text-align:center; visibility:hidden;" id="mouseHoverDisplay">
+    </div>
+
+</body>
+</html>
