@@ -10,26 +10,31 @@
     }
 </style>
     <script type="text/javascript" src="Point.js"></script>
-    <script type="text/javascript" src="Poly.js"></script>
-    <script type="text/javascript" src="Polygon.js"></script>
+    <script type="text/javascript" src="Face.js"></script>
     <script type="text/javascript" src="HalfEdge.js"></script>
+    <script type="text/javascript" src="Poly.js"></script>
     <script type="text/javascript" src="Triangulation.js"></script>
     <script type="text/javascript" src="TreeNode.js"></script>
     <script type="text/javascript" src="Tree.js"></script>
+    <script type="text/javascript" src="stage.js"></script>
+    <script type="text/javascript" src="tooltip.js"></script>
+    <script type="text/javascript" src="main2.js"></script>
     
-    <script type="text/javascript" src="main.js"></script>
     <script type="text/javascript">
+    
+        var stage;
+        var tooltip;
         function onLoad(){
+            window.addEventListener("mousemove", mouseMove);
+            window.addEventListener("mousedown", mouseDown);
+            window.addEventListener("keypress", keyPressEvent);
+            
             canv = document.getElementById("canvas");
-            //canv.onclick = mouseClick;
-            canv.onmousemove = mouseMove;
-            canv.addEventListener('mousedown', mouseDown);
-            c = canv.getContext('2d');
+            stage = new Stage(canv.getContext('2d'));
             w = canv.width = window.innerWidth;
             h = canv.height = window.innerHeight;
-
-            c.fillStyle = "#ffffff";
-            c.fillRect (0, 0, w, h);
+            stage.init(w, h, "#ffffff");
+            tooltip = new Tooltip(document);
         }
     </script>
 </head>
@@ -48,7 +53,7 @@
         </div>-->
     </div>
 
-    <div style="position:fixed; background-color:rgba(0,0,0,0.66); color:#fff; z-index:2; padding:6px; border-radius:6px; text-align:center; visibility:hidden;" id="mouseHoverDisplay">
+    <div id="mouseHoverDisplay" style="position:fixed; background-color:rgba(0,0,0,0.66); color:#fff; z-index:2; padding:6px; border-radius:6px; text-align:center; visibility:hidden;">
     </div>
 
 </body>

@@ -10,18 +10,21 @@ function Poly(){
 
 Poly.prototype.makeFromPointArray = function(points){
     this.wipe();
-    if(this.isCW(points)) points = points.reverse();
+    if(this.isCW(points)){
+        //console.log('reversi');
+        //points = points.reverse();
+    }
     var lastEdge = null;
 
     for(var i=0; i < points.length; i++){
         if(i == 0){
-            this.firstPoint(points[i].x, points[i].y);
+            this.firstPoint(points[i]);
         }else if(i == 1){
             lastEdge = this.points[i-1].edge;
-            this.secondPoint(points[i].x, points[i].y, lastEdge);
+            this.secondPoint(points[i], lastEdge);
         }else{
             lastEdge = this.points[i-1].edge.twin;
-            this.thirdPoint(points[i].x, points[i].y, lastEdge);
+            this.thirdPoint(points[i], lastEdge);
         }
     }
     lastEdge = this.points[i-1].edge.twin;
@@ -52,27 +55,26 @@ Poly.prototype.makeFromPointArray = function(points){
 		}
 	}
 }*/
-Poly.prototype.addPoint = function(x,y, ed=null){
-    //add the point
-    var i = this.points.length;
-    var p = new Point(x,y,i);
-    this.points.push(p);
+// Poly.prototype.addPoint = function(x,y, ed=null){
+//     //add the point
+//     var i = this.points.length;
+//     var p = new Point(x,y,i);
+//     this.points.push(p);
 
-//console.log(this.points, i);
-    //add the edge
-    edge = new HalfEdge(p, this.edges.length);
-    this.edges.push(edge);
-    this.points[i].setEdge(edge);
+// //console.log(this.points, i);
+//     //add the edge
+//     edge = new HalfEdge(p, this.edges.length);
+//     this.edges.push(edge);
+//     this.points[i].setEdge(edge);
 
-    //fix the relationships
-    if(i!=0){
-        this.edges[i-1].setNextEdge(this.edges[i]);
-        this.edges[i].setPrevEdge(this.edges[i-1]);
-    }
-};
-Poly.prototype.firstPoint = function (x, y){
+//     //fix the relationships
+//     if(i!=0){
+//         this.edges[i-1].setNextEdge(this.edges[i]);
+//         this.edges[i].setPrevEdge(this.edges[i-1]);
+//     }
+// };
+Poly.prototype.firstPoint = function (p){
     var i = this.points.length;
-    var p = new Point(x, y, 0);
     this.points.push(p);
 
     var edge = new HalfEdge(p, '0');
@@ -89,17 +91,15 @@ Poly.prototype.firstPoint = function (x, y){
     edge.setPrevEdge(reverse);
     reverse.setNextEdge(edge);
 };
-Poly.prototype.secondPoint = function(x,y, old){
+Poly.prototype.secondPoint = function(p, old){
     var i = this.points.length;
-    var p = new Point(x,y,i);
     this.points.push(p);
     p.setEdge(old.twin);
 
     old.twin.setOrigin(p);
 };
-Poly.prototype.thirdPoint = function(x, y, old){
+Poly.prototype.thirdPoint = function(p, old){
     var i = this.points.length;
-    var p = new Point(x,y,i);
     this.points.push(p);
 
     var edge = new HalfEdge(old.twin.origin, i-1);  //or old.next.origin
@@ -142,7 +142,7 @@ Poly.prototype.close = function(first, last){ //only to the origin
     reverse.setNextEdge(last.twin);
     last.twin.setPrevEdge(reverse);
 
-    var closed = new Polygon(this.polygons.length);
+    var closed = new Face(this.polygons.length);
     this.polygons.push(closed);
     if(this.isEdgeCW(edge)){
         closed.setEdge(reverse);
@@ -169,7 +169,7 @@ Poly.prototype.addDiagonal = function(a,b){
     var tempA = edgeA.twin.next;
     var tempB = edgeB.twin.next;
 
-    //console.log(edgeA, edgeB);
+    console.log("adding diagonal",edgeA, edgeB, tempA, tempB);
 	var aNew = new HalfEdge(a, this.edges.length);
 	var bNew = new HalfEdge(b, this.edges.length+"*");
     this.edges.push(aNew);
@@ -186,7 +186,7 @@ Poly.prototype.addDiagonal = function(a,b){
     aNew.setPrevEdge(tempA.twin);
 
 
-    var closed = new Polygon(this.polygons.length);
+    var closed = new Face(this.polygons.length);
     this.polygons.push(closed);
     if(this.isEdgeCW(aNew)){
         closed.setEdge(bNew);
@@ -199,9 +199,9 @@ Poly.prototype.addDiagonal = function(a,b){
         bNew.setPolygon(bNew.next.polygon);
         bNew.polygon.setEdge(bNew);
     }
-    //console.log(this.polygons);
-    //tempA.polygon.setEdge(bNew);
-    //tempB.polygon.setEdge(aNew);
+    console.log(this.polygons);
+    // tempA.polygon.setEdge(bNew);
+    // tempB.polygon.setEdge(aNew);
 };
 Poly.prototype.wipe = function(){
 	this.points = [];

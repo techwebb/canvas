@@ -1,5 +1,4 @@
 function HalfEdge(v, name){
-	
 	this.name = name;
 	//this.Start = null;
 	this.origin = v;
@@ -30,7 +29,7 @@ HalfEdge.prototype.setHelper = function(p){
 
 HalfEdge.prototype.toHTML = function(){
     var pName = this.polygon ? this.polygon.getName() : '';
-	return "<b>e"+this.name + "</b><br/> (" + this.origin.getName() + ", " + this.next.origin.getName() + ")<br/>"+pName;
+	return `<b>e${this.name}</b><br/>(${this.origin.getName()}, ${this.next.origin.getName()})<br/>${pName}`;
 };
 
 HalfEdge.prototype.getName = function(){
