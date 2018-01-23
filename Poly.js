@@ -167,9 +167,9 @@ Poly.prototype.addDiagonal = function(a,b){
 	var edgeA = a.edge;
 	var edgeB = b.edge;
     var tempA = edgeA.twin.next;
-    var tempB = edgeB.twin.next;
+    var tempB = edgeB.prev.twin;
 
-    console.log("adding diagonal",edgeA, edgeB, tempA, tempB);
+    //console.log("adding diagonal",edgeA, edgeB, tempA, tempB);
 	var aNew = new HalfEdge(a, this.edges.length);
 	var bNew = new HalfEdge(b, this.edges.length+"*");
     this.edges.push(aNew);
@@ -185,6 +185,9 @@ Poly.prototype.addDiagonal = function(a,b){
     edgeB.setPrevEdge(aNew);
     aNew.setPrevEdge(tempA.twin);
 
+    aNew.setTwin(bNew);
+    bNew.setTwin(aNew);
+
 
     var closed = new Face(this.polygons.length);
     this.polygons.push(closed);
@@ -199,9 +202,6 @@ Poly.prototype.addDiagonal = function(a,b){
         bNew.setPolygon(bNew.next.polygon);
         bNew.polygon.setEdge(bNew);
     }
-    console.log(this.polygons);
-    // tempA.polygon.setEdge(bNew);
-    // tempB.polygon.setEdge(aNew);
 };
 Poly.prototype.wipe = function(){
 	this.points = [];

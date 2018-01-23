@@ -52,8 +52,6 @@ Triangulation.prototype.makeMonotone = function(){
 				this.mergeVertex(points[i]);
 				break;
 		}
-		//console.log(i, this.treeToString());
-		//if(i==5) break;
 	}
 	this.addDiagonals.forEach((item) => this.poly.addDiagonal(item[0], item[1]));
 };
@@ -70,7 +68,6 @@ Triangulation.prototype.getPoly = function(){
 };
 
 Triangulation.prototype.determinePointType = function(p){
-	//console.log(p);
 	var left = p.edge.next.origin;
 	var right = p.edge.prev.origin;
 	if(this.isLower(p, left) && this.isLower(p, right)){
@@ -98,14 +95,12 @@ Triangulation.prototype.startVertex = function(p){
 Triangulation.prototype.endVertex = function(p){
 	if(this.determinePointType(p.edge.prev.helper) == 'mergeVertex'){
 		this.addDiagonals.push([p, p.edge.prev.helper]);
-		//this.poly.addDiagonal(p, p.edge.prev.helper);
 	}
 	this.Tree.splice(this.treeIndexOfEdge(p.edge.prev), 1);
 };
 Triangulation.prototype.splitVertex = function(p){
 	var edgeToTheLeft = this.getEdgeToLeft(p);
 	this.addDiagonals.push([p, edgeToTheLeft.helper]);
-	//this.poly.addDiagonal(p, edgeToTheLeft.helper);
 	edgeToTheLeft.setHelper(p);
 	this.Tree.push(p.edge);
 	p.edge.setHelper(p);
@@ -113,41 +108,28 @@ Triangulation.prototype.splitVertex = function(p){
 
 Triangulation.prototype.mergeVertex = function(p){
 	let toSplice = p.edge.prev;
-	//console.log(p.edge,"p.edge.prev.helper: "+this.determinePointType(p.edge.prev.helper));
 	if(this.determinePointType(p.edge.prev.helper) == 'mergeVertex'){
-		//console.log("bob");
 		this.addDiagonals.push([p, p.edge.prev.helper]);
-		//this.poly.addDiagonal(p, p.edge.prev.helper);
 	}
-	//console.log(this.treeIndexOfEdge(p.edge.prev));
 	this.Tree.splice(this.treeIndexOfEdge(toSplice), 1);
-	console.log("tree: "+this.treeToString());
 	let edgeToTheLeft = this.getEdgeToLeft(p);
-	console.log(edgeToTheLeft, "edgeToTheLeft.helper.name: "+edgeToTheLeft.helper.name, this.determinePointType(edgeToTheLeft.helper));
 	if(this.determinePointType(edgeToTheLeft.helper) == 'mergeVertex'){
-		//console.log()
 		this.addDiagonals.push([p, edgeToTheLeft.helper]);
-		//this.poly.addDiagonal(p, edgeToTheLeft.helper);
 	}
 	edgeToTheLeft.setHelper(p);
 };
 Triangulation.prototype.regularVertex = function(p){
-	//polygon is to the right, edge is left side
 	if(p.edge.next.origin.y > p.y || (p.edge.next.origin.y == p.y && p.edge.next.origin.x > p.x)){
-		console.log("left");
 		if(this.determinePointType(p.edge.prev.helper) == 'mergeVertex'){
 			this.addDiagonals.push([p, p.edge.prev.helper]);
-			//this.poly.addDiagonal(p, p.edge.prev.helper);
 		}
 		this.Tree.splice(this.treeIndexOfEdge(p.edge.prev), 1);
 		this.Tree.push(p.edge);
 		p.edge.setHelper(p);
-	}else{ //edge on right side. polygon innards to the left
-		console.log("right");
+	}else{ 
 		var edgeToTheLeft = this.getEdgeToLeft(p);
 		if(this.determinePointType(edgeToTheLeft.helper) == 'mergeVertex'){
 			this.addDiagonals.push([p, edgeToTheLeft.helper]);
-			//this.poly.addDiagonal(p, edgeToTheLeft.helper);
 		}
 		edgeToTheLeft.setHelper(p);
 	}
@@ -165,7 +147,6 @@ Triangulation.prototype.treeIndexOfEdge = function(e){
 	return -1;
 };
 Triangulation.prototype.getEdgeToLeft = function(p){
-	//loop from the right side
 
 	if(this.Tree.length == 1) return this.Tree[0];
 	//instead sort and filter this tree, and find the best match instead of the first success
@@ -176,18 +157,7 @@ Triangulation.prototype.getEdgeToLeft = function(p){
 			e:item
 	}
 	}).sort((a,b) => a.x < b.x);
-	console.log(sorted);
 	return sorted[0].e;
-	// for(var i=this.Tree.length; i--;){
-	// 	//origin is above point. origin is to the left of point
-	// 	console.log(this.Tree[i].origin.y, p.y, this.Tree[i].origin.x, p.x)
-	// 	if(this.isLower(this.Tree[i].origin, p) &&
-	// 	 (this.Tree[i].origin.x < p.x || this.Tree[i].next.origin.x < p.x)){
-	// 		//return the first success.
-	// 		return this.Tree[i];
-	// 	}
-	// }
-	console.log("died: "+p.name, this.treeToString(), this.Tree.length);
 };
 Triangulation.prototype.treeToString = function(){
 	var r = '';
